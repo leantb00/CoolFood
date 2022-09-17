@@ -2,9 +2,9 @@ import React from "react";
 import LoginScreen from "./components/GoogleButton";
 import { StyleSheet, View } from "react-native";
 import Dont from "./components/Dont";
-import Input from "./components/Input";
+import Login from "./components/Login";
 import Logo from "./components/Logo";
-import SignUp from "./components/SignUp";
+//import SignUp from "./components/SignUp";
 import Welcome from "./components/Welcome";
 import Background from "./components/Background";
 
@@ -17,8 +17,7 @@ export default function App() {
       <Background/>
       <Logo />
       <Welcome />
-      <Input />
-      <SignUp />
+      <Login />
       <LoginScreen/>
       <Dont />
       </View>

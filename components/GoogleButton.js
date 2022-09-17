@@ -1,101 +1,61 @@
-import React from "react"
-import { StyleSheet, Text, View, Image, Button,TouchableOpacity} from "react-native"
-import Expo from "expo"
-import GoogleLogin from "../assets/LoginButton.png"
-export default class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      signedIn: false,
-      name: "",
-      photoUrl: ""
-    }
-  }
-  signIn = async () => {
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Button, Image } from "react-native";
+import * as Facebook from "expo-facebook";
+//import loginFacebook from "../assets/loginFacebook";
+
+
+export default function App() {
+  const [user, setUser] = useState(null);
+
+  const signUpFacebook = async () => {
     try {
-      const result = await Expo.Google.logInAsync({
-        androidClientId:
-          "833456763323-ig9ndr0tbvb62jv4ddn6j8pos3a49m35.apps.googleusercontent.com",
-        //iosClientId: YOUR_CLIENT_ID_HERE,  <-- if you use iOS
-        scopes: ["profile", "email"]
-      })
-
-      if (result.type === "success") {
-        this.setState({
-          signedIn: true,
-          name: result.user.name,
-          photoUrl: result.user.photoUrl
-        })
+      await Facebook.initializeAsync('1122771295342866');
+      const { type, token } = await Facebook.logInWithReadPermissionsAsync({
+        permissions: ["public_profile", "email"],
+      });
+      if (type === "success") {
+        // Get the user's name using Facebook's Graph API
+        const response = await fetch(
+          `https://graph.facebook.com/me?fields=id,name,picture.type(large),email&access_token=${token}`
+        );
+        // console.log((await response.json()).name);
+        const data = await response.json();
+        setUser(data);
       } else {
-        console.log("cancelled")
+        // type === 'cancel'
       }
-    } catch (e) {
-      console.log("error", e)
+    } catch ({ message }) {
+      alert(`Facebook Login Error: ${message}`);
     }
-  }
-  render() {
-    return (
-      <View style={styles.container}>
-        {this.state.signedIn ? (
-          <LoggedInPage name={this.state.name} photoUrl={this.state.photoUrl} />
-        ) : (
-          <LoginPage signIn={this.signIn} />
-        )}
-      </View>
-    )
-  }
-}
+  };
 
-const LoginPage = props => {
-  return (
-    <View>
-     
-      
-      
-
-      <TouchableOpacity >
-   
-        
-            <Image
-                
-               
-                source={GoogleLogin}
-                onPress={() => props.signIn()}
-            />
-            
-       
-    
-</TouchableOpacity>
-    </View>
-  )
-}
-
-const LoggedInPage = props => {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Welcome:{props.name}</Text>
-      <Image style={styles.image} source={{ uri: props.photoUrl }} />
+      {user ? (
+        <View style={styles.fotoContainer}>
+          <Image style={styles.image} source={{ uri: user.picture.data.url }} />
+          <Text style={styles.text}>{user.name}</Text>
+          <Text style={styles.text}>{user.email}</Text>
+        </View>
+      ) : (
+        <Button  title="Login" onPress={signUpFacebook} bgColor='#4267B2' />
+      )}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f4f4f4",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
-  header: {
-    fontSize: 25
-  },
-  image: {
-    marginTop: 15,
-    width: 150,
-    height: 150,
-    borderColor: "rgba(0,0,0,0.2)",
-    borderWidth: 3,
-    borderRadius: 150
-  }
- 
-})
+  fotoContainer: {},
+  image: { width: 200, height: 200 },
+  text: { fontSize: 18, textAlign: "center" },
+
+
+
+});

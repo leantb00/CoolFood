@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   img: {
     paddingTop: 60,
     justifyContent: "center",
-    alignItems: "center",    
+    alignItems: "center",  
+    
   },
 });
