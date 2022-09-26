@@ -1,11 +1,10 @@
 {
   "expo": {
-    "name": "login-app",
-    "slug": "login-app",
+    "name": "template-typescript-bottom-tabs-supabase-auth-flow",
+    "slug": "template-typescript-bottom-tabs-supabase-auth-flow",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
