@@ -1,14 +1,25 @@
-import Axios from 'axios';
+import Axios, {AxiosInstance} from 'axios';
+import Storage from '../utils/Storage';
 
 export const api = Axios.create({
-    baseURL: 'https://c443-2804-d4b-a919-5800-7d7f-7a3-1eec-2fd8.sa.ngrok.io/api/',
+    baseURL: 'https://3607-2804-d4b-a919-5800-7d7f-7a3-1eec-2fd8.sa.ngrok.io/api/',
     timeout: 5000,
     // headers: {'X-Custom-Header': 'foobar'}
 });
 
-api.interceptors.request.use(function (config) {
+
+
+api.interceptors.request.use(async function (req:any) {
     // Faz alguma coisa antes da requisição ser enviada
-    return config;
+    if (!req.public) {
+      const token = await Storage.getToken();
+      if (token) {
+        req.headers.authorization =
+          req.headers.authorization || `Token ${token}`;
+      }
+    }
+    return req;
+    
   }, function (error) {
     // Faz alguma coisa com o erro da requisição
     return Promise.reject(error);
@@ -24,5 +35,6 @@ api.interceptors.response.use(function (response) {
     // Faz alguma coisa com o erro da resposta
     return Promise.reject(error);
   });
+
 
 

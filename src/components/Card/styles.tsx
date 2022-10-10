@@ -53,13 +53,11 @@ export const styles = StyleSheet.create({
     flex: 1
   },
   listItemTitle: {
-    fontFamily: "Roboto-Bold",
     color: "#da332e",
     fontWeight: "bold",
     fontSize: 16
   },
   listItemText: {
-    fontFamily: "EDPPreon-Regular",
     fontSize: 14,
     color: "#4f4f4f"
   },

@@ -4,9 +4,9 @@ import React from 'react'
 import { Avatar } from "@rneui/themed";
 
 
-export function Card({item,key, onPress}: any){
+export function Card({item, onPress}: any){
     return(
-        <View style={css.styles.listItem} key={key}>
+        <View style={css.styles.listItem}>
             <TouchableOpacity
               style={css.styles.listItemblock}
               onPress={onPress}
@@ -27,7 +27,7 @@ export function Card({item,key, onPress}: any){
                   // activeOpacity={0.7}
                 />
               )} */}
-              <Avatar
+              {/* <Avatar
                   size={95}
                   imageProps={{ resizeMode: "contain" }}
                   source={require('../../../assets/icon.png')}
@@ -40,41 +40,40 @@ export function Card({item,key, onPress}: any){
                   // }
                   // onPress={() => console.log('Works! == Funfa!!!')}
                   // activeOpacity={0.7}
-                />
+                /> */}
               <View style={css.styles.listItemContainer}>
                 <Text
                   numberOfLines={1}
                   ellipsizeMode={"tail"}
                   style={css.styles.listItemTitle}
                 >
-                  {item.title}
+                  {item.name}
                 </Text>
-                {!item.content ? (
-                  <Text
-                    numberOfLines={4}
-                    ellipsizeMode={"tail"}
-                    style={css.styles.listItemText}
-                  >
-                    {item.description}
-                  </Text>
-                ) : (
-                  <Text
-                    numberOfLines={4}
-                    ellipsizeMode={"tail"}
-                    style={css.styles.listItemText}
-                  >
-                    {item.content}
-                  </Text>
-                )}
+                <Text
+                  numberOfLines={4}
+                  ellipsizeMode={"tail"}
+                  style={css.styles.listItemText}
+                >
+                  {item.description}
+                </Text>
+                <Text
+                  numberOfLines={4}
+                  ellipsizeMode={"tail"}
+                  style={css.styles.listItemText}
+                >
+                  {item.address.city + ' - ' + item.address.state}
+                </Text>
+                
+              
                 <View style={{ flex: 1, justifyContent: "flex-end" }}>
                 
-                  {!item.date ? null : (
+                  {!item.phone ? null : (
                     <Text
                       numberOfLines={1}
                       ellipsizeMode={"tail"}
                       style={css.styles.listItemDate}
                     >
-                      {item.date}
+                      {item.phone}
                     </Text>
                   )}
                 </View>

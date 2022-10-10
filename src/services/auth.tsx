@@ -6,11 +6,12 @@ type LoginData = {
 }
 
 const Login = (data : LoginData) => {
-    return api.post('users/login/', data)
+    
+    return api.post<any>('users/login/', data, {public:true})
 }
 
 const register = (data: any) => {
-    return api.post('users/register_user/', data)
+    return api.post('users/register_user/', data, {public:true})
 }
 
 export default {

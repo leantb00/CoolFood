@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Linking, FlatList, TouchableOpacity, TextInput } from "react-native";
 import { MainStackParamList } from "../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { supabase } from "../initSupabase";
 import {
   Layout,
   Button,
@@ -13,28 +12,58 @@ import {
   useTheme,
   themeColor,
 } from "react-native-rapi-ui";
-
+import establishment from "../services/establishment"
 import { Input, Icon } from "@rneui/themed";
-import { Ionicons } from "@expo/vector-icons";
+import { showMessage, hideMessage } from "react-native-flash-message";
 import { Card }  from "../components/Card";
+import { AxiosError } from "axios";
+
 
 export default function ({
   navigation,
 }: NativeStackScreenProps<MainStackParamList, "MainTabs">) {
   const { isDarkmode, setTheme } = useTheme();
-  const [listEstablishment, setListEstablishment] = useState([{
-    title:'Felix Estabelecimento',
-    description:'sadaiosda',
-    content:'sadasdas',
-    date:'20/12/22'
-
-
-  }])
+  const [listEstablishment, setListEstablishment] = useState<any>([])
   const [searchText, setSearchText] = useState('')
   const [refreshing, setRefreshing] = useState(false)
-  function onPullToRefresh(){}
+  function onPullToRefresh(){
+    getEstablishments()
+  }
 
-  function programSearch(text:any){}
+  function programSearch(text:any){
+    const newList = listEstablishment.filter((item:any) => item.name.includes(text))
+    setListEstablishment(newList)
+  }
+
+
+  useEffect(() => {
+    getEstablishments()
+  }, [])
+
+  async function getEstablishments(){
+    setRefreshing(true)
+    try{
+      const response = await establishment.getEstablishments()
+      setRefreshing(false)
+      // console.log('response || ', response)
+      if(response){
+        setListEstablishment(response.data)
+      }
+    }catch(e){
+      if(e instanceof AxiosError){
+        setRefreshing(false)
+        showMessage({
+          message: e.response ? e.response.data.msg : 'Nao deu Listar os Estabelecimentos, Verifique sua conexao',
+          type: "danger",
+        });
+      } else{
+        showMessage({
+          message: "Nao deu Certo logar Verifique Dados de usuario e Senha.",
+          type: "danger",
+        });
+      }
+    }
+  }
 
   return (
     <Layout>
@@ -109,29 +138,37 @@ export default function ({
                       size={18}
                       // iconStyle={{ right: 15 }}
                       onPress={() => {
-                        _.debounce(
-                          programSearch(searchText),
-                          500
-                        );
+                        programSearch(searchText)
                       }}
                       color="#BA4458"
                     />
                   }
-                  InputComponent={
-                  () => <TextInput
-                    onChangeText={(text:any) => {
-                      setSearchText(text)
-                      // this.setState({ searchText: text });
-                    }}
-                    onSubmitEditing={() => {
-                      programSearch(searchText);
-                    }}
-                    value={searchText}
-                    placeholder={'Busca'}
-                    autoCapitalize={"none"}
-                    underlineColorAndroid="transparent"
-                    
-                  />}
+                  // InputComponent={
+                  //   () => {
+                  //   return <TextInput
+                  //     onChangeText={(text:any) => {
+                  //       setSearchText(text)
+                  //       console.log("alterando Texto")
+                  //     }}
+                  //     // onSubmitEditing={() => {
+                  //     //   programSearch(searchText);
+                  //     // }}
+                  //     value={searchText}
+                  //     placeholder={'Busca'}
+                  //     // autoCapitalize={"none"}
+                  //     // underlineColorAndroid="transparent"
+                  //     style={{width:'100%'}}
+                  //   />}
+                  // }
+
+                  onChangeText={(text:any) => {
+                    setSearchText(text)
+                    console.log("alterando Texto")
+                  }}
+                  value={searchText}
+                  onSubmitEditing={() => {
+                    programSearch(searchText);
+                  }}
                   inputStyle={{
                     backgroundColor: "#EFEFEF",
                     color: "#da332e",
