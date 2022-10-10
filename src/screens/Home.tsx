@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Linking } from "react-native";
+import React, { useState } from "react";
+import { View, Linking, FlatList, TouchableOpacity, TextInput } from "react-native";
 import { MainStackParamList } from "../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { supabase } from "../initSupabase";
@@ -13,15 +13,32 @@ import {
   useTheme,
   themeColor,
 } from "react-native-rapi-ui";
+
+import { Input, Icon } from "@rneui/themed";
 import { Ionicons } from "@expo/vector-icons";
+import { Card }  from "../components/Card";
 
 export default function ({
   navigation,
 }: NativeStackScreenProps<MainStackParamList, "MainTabs">) {
   const { isDarkmode, setTheme } = useTheme();
+  const [listEstablishment, setListEstablishment] = useState([{
+    title:'Felix Estabelecimento',
+    description:'sadaiosda',
+    content:'sadasdas',
+    date:'20/12/22'
+
+
+  }])
+  const [searchText, setSearchText] = useState('')
+  const [refreshing, setRefreshing] = useState(false)
+  function onPullToRefresh(){}
+
+  function programSearch(text:any){}
+
   return (
     <Layout>
-      <TopNav
+      {/* <TopNav
         middleContent="Home"
         rightContent={
           <Ionicons
@@ -37,7 +54,7 @@ export default function ({
             setTheme("dark");
           }
         }}
-      />
+      /> */}
       <View
         style={{
           flex: 1,
@@ -45,44 +62,86 @@ export default function ({
           justifyContent: "center",
         }}
       >
-        <Section style={{ marginTop: 20 }}>
-          <SectionContent>
-            <Text fontWeight="bold" style={{ textAlign: "center" }}>
-              These UI components provided by Rapi UI
-            </Text>
-            <Button
-              style={{ marginTop: 10 }}
-              text="Rapi UI Documentation"
-              status="info"
-              onPress={() => Linking.openURL("https://rapi-ui.kikiding.space/")}
+        <FlatList
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+
+            paddingBottom: 20,
+          }}
+          data={listEstablishment}
+          renderItem={({ item, index }) => (
+            <Card
+              item={item}
+              onPress={() => {}}
+              key={index}
             />
-            <Button
-              text="Go to second screen"
-              onPress={() => {
-                navigation.navigate("SecondScreen");
-              }}
-              style={{
-                marginTop: 10,
-              }}
-            />
-            <Button
-              status="danger"
-              text="Logout"
-              onPress={async () => {
-                const { error } = await supabase.auth.signOut();
-                if (!error) {
-                  alert("Signed out!");
-                }
-                if (error) {
-                  alert(error.message);
-                }
-              }}
-              style={{
-                marginTop: 10,
-              }}
-            />
-          </SectionContent>
-        </Section>
+          )}
+          onRefresh={() => onPullToRefresh()}
+          refreshing={refreshing}
+          ListEmptyComponent={
+            listEstablishment.length == 0 ? (
+              <View style={{ marginTop: 10 }}>
+                <Text>
+                  {'Nenhum Resultado Encontrado'}
+                </Text>
+              </View>
+            ) : null
+          }
+          ListHeaderComponent={
+            <View>
+              <View
+                style={{
+                  backgroundColor: "#EFEFEF",
+                  borderRadius: 100,
+                  width: "85%",
+                  height: 45,
+                  marginTop: 25,
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  flexDirection: "row",
+                }}
+              >
+                <Input
+                  leftIcon={
+                    <Icon
+                      name="search"
+                      type="font-awesome"
+                      size={18}
+                      // iconStyle={{ right: 15 }}
+                      onPress={() => {
+                        _.debounce(
+                          programSearch(searchText),
+                          500
+                        );
+                      }}
+                      color="#BA4458"
+                    />
+                  }
+                  InputComponent={
+                  () => <TextInput
+                    onChangeText={(text:any) => {
+                      setSearchText(text)
+                      // this.setState({ searchText: text });
+                    }}
+                    onSubmitEditing={() => {
+                      programSearch(searchText);
+                    }}
+                    value={searchText}
+                    placeholder={'Busca'}
+                    autoCapitalize={"none"}
+                    underlineColorAndroid="transparent"
+                    
+                  />}
+                  inputStyle={{
+                    backgroundColor: "#EFEFEF",
+                    color: "#da332e",
+                  }}
+                  
+                />
+              </View>
+              </View>
+              }
+                />
       </View>
     </Layout>
   );

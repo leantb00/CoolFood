@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext} from "react";
 import { StatusBar } from "expo-status-bar";
 
 
@@ -10,8 +10,9 @@ import {
   Image,
 } from "react-native";
 import { supabase } from "../../initSupabase";
-import { AuthStackParamList } from "../../types/navigation";
+import { AuthStackParamList,  } from "../../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 import {
   Layout,
@@ -21,31 +22,62 @@ import {
   useTheme,
   themeColor,
 } from "react-native-rapi-ui";
+import auth from "../../services/auth";
+import Storage from "../../utils/Storage";
+import { AxiosError } from "axios";
+import { AuthContext } from '../../provider/AuthProvider';
 
 export default function ({
   navigation,
-}: NativeStackScreenProps<AuthStackParamList, "Login">) {
+}: NativeStackScreenProps<any>) {
   const { isDarkmode, setTheme } = useTheme();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
+  const authCont = useContext(AuthContext);
+
   async function login() {
     setLoading(true);
-    const { user, error } = await supabase.auth.signIn({
-      email: email,
-      password: password,
-    });
-    if (!error && !user) {
+    try{
+      let data = {
+        username:name,
+        password
+      }
+      console.log('data || ', data)
+      const response = await auth.Login(data);
       setLoading(false);
-      alert("Check your email for the login link!");
-    }
-    if (error) {
-      setLoading(false);
-      alert(error.message);
+      if(response.data.token){
+        Storage.setToken(response.data.token)
+        showMessage({
+          message: "Login Sucessfull",
+          type: "success",
+        });  
+        authCont.setUser(true)
+        // navigation.navigate("MainTabs");
+      } else {
+        throw Error(response.data.msg);
+      }
+      
+
+    } catch(e){
+      if(e instanceof AxiosError){
+        setLoading(false);
+        showMessage({
+          message: e.response ? e.response.data.msg : 'Nao deu Certo Register, Verifique os Dados',
+          type: "danger",
+        });
+      } else{
+        showMessage({
+          message: "Nao deu Certo logar Verifique Dados de usuario e Senha.",
+          type: "danger",
+        });
+      }
+      
     }
   }
+
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
       <Layout>
@@ -90,32 +122,22 @@ export default function ({
             </Text>
             <TextInput
               containerStyle={{ marginTop: 15 }}
-              placeholder="Nome"
-              value={email}
+              placeholder="email"
+              value={name}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete='off'
               autoCorrect={false}
               keyboardType="email-address"
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={(text) => setName(text)}
             />
 
-            <TextInput
-              containerStyle={{ marginTop: 15 }}
-              placeholder="Email"
-              value={email}
-              autoCapitalize="none"
-              autoCompleteType="off"
-              autoCorrect={false}
-              keyboardType="email-address"
-              onChangeText={(text) => setEmail(text)}
-            />
 
             <TextInput
               containerStyle={{ marginTop: 15 }}
               placeholder="Senha"
               value={password}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete='off'
               autoCorrect={false}
               secureTextEntry={true}
               onChangeText={(text) => setPassword(text)}
@@ -145,11 +167,6 @@ export default function ({
                 
               }}
             >
-              
-             
-              
-              
-              
               <Text  size="md">Não tem uma conta? </Text>
               <TouchableOpacity
                 onPress={() => {

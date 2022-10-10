@@ -18,7 +18,10 @@ import {
   useTheme,
   themeColor,
 } from "react-native-rapi-ui";
-
+import auth from "../../services/auth";
+import Storage from "../../utils/Storage";
+import { AxiosError } from "axios";
+import { showMessage, hideMessage } from "react-native-flash-message";
 export default function ({
   navigation,
 }: NativeStackScreenProps<AuthStackParamList, "Register">) {
@@ -33,22 +36,46 @@ export default function ({
 
   async function register() {
     setLoading(true);
-    const { user, error } = await supabase.auth.signUp({
-      name: name,
-      email: email,
-      phone: phone,
-      password: password,
-      confirmPasowrd:confirmPassword,
-    });
-    if (!error && !user) {
+    try{
+      let data = {
+        name: name,
+        email: email,
+        phone: phone,
+        password: password,
+        confirmPasowrd:confirmPassword,
+      }
+      const response = await auth.register(data);
       setLoading(false);
-      alert("Check your email for the login link!");
-    }
-    if (error) {
-      setLoading(false);
-      alert(error.message);
+      if(response.data.token){
+        Storage.setToken(response.data.token)
+        
+        showMessage({
+          message: "Cadastro Sucessfull",
+          type: "success",
+        });  
+        navigation.navigate("Login");
+      } else {
+        throw Error(response.data.msg);
+      }
+      
+
+    } catch(e){
+      if(e instanceof AxiosError){
+        setLoading(false);
+        showMessage({
+          message: e.response ? e.response.data.msg : 'Nao deu Certo Register, Verifique os Dados',
+          type: "danger",
+        });
+      } else{
+        showMessage({
+          message: "Nao deu Certo Register Verifique Dados de usuario e Senha.",
+          type: "danger",
+        });
+      }
+      
     }
   }
+
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
       <Layout>
@@ -95,10 +122,10 @@ export default function ({
               placeholder="Nome"
               value={name}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete="off"
               autoCorrect={false}
               keyboardType="email-address"
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={(text) => setName(text)}
             />
           
             <TextInput
@@ -106,7 +133,7 @@ export default function ({
               placeholder="Email"
               value={email}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete="off"
               autoCorrect={false}
               keyboardType="email-address"
               onChangeText={(text) => setEmail(text)}
@@ -117,10 +144,10 @@ export default function ({
               placeholder="Telefone"
               value={phone}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete="off"
               autoCorrect={false}
-              secureTextEntry={true}
-              onChangeText={(text) => setPassword(text)}
+              // secureTextEntry={true}
+              onChangeText={(text) => setPhone(text)}
             />  
           
 
@@ -131,7 +158,7 @@ export default function ({
               placeholder="Senha"
               value={password}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete="off"
               autoCorrect={false}
               secureTextEntry={true}
               onChangeText={(text) => setPassword(text)}
@@ -142,10 +169,10 @@ export default function ({
               placeholder="Confirma Senha"
               value={confirmPassword}
               autoCapitalize="none"
-              autoCompleteType="off"
+              autoComplete="off"
               autoCorrect={false}
               secureTextEntry={true}
-              onChangeText={(text) => setPassword(text)}
+              onChangeText={(text) => setConfirmPassword(text)}
             />
             
             
@@ -172,14 +199,15 @@ export default function ({
               
             >
               {/*<Text size="md">Already have an account?</Text>*/}  
-              <Button color="#9acd32"
+              <Button color="red"
               text={loading ? "Loading" : "Cancelar"}
               onPress={() => {
                 navigation.navigate("Login");
               }}
               style={{
-                paddingHorizontal: 148
-                
+                // paddingHorizontal: 148
+                width:'80%',
+                flex:1,
               }}
               disabled={loading}
             />
