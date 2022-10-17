@@ -1,6 +1,7 @@
 export type MainStackParamList = {
 	MainTabs: undefined;
-	SecondScreen: undefined;
+	Establishment: { item: any };
+	Comment:any
 };
 
 export type AuthStackParamList = {

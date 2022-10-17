@@ -1,5 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { themeColor, useTheme } from "react-native-rapi-ui";
 import TabBarIcon from "../components/utils/TabBarIcon";
@@ -8,6 +9,30 @@ import TabBarText from "../components/utils/TabBarText";
 import Home from "../screens/Home";
 import About from "../screens/About";
 import Profile from "../screens/Profile";
+import Establishment from "../screens/Establishment";
+import Comment from "../screens/Comment";
+
+
+const Stack = createNativeStackNavigator();
+const HomeStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Establishment" component={Establishment} />
+      <Stack.Screen name="Comment" component={Comment} />
+    </Stack.Navigator>
+  );
+};
+
+
+
+
+
+
 
 const Tabs = createBottomTabNavigator();
 const MainTabs = () => {
@@ -25,7 +50,7 @@ const MainTabs = () => {
       {/* these icons using Ionicons */}
       <Tabs.Screen
         name="Home"
-        component={Home}
+        component={HomeStack}
         options={{
           tabBarLabel: ({ focused }) => (
             <TabBarText focused={focused} title="Home" />

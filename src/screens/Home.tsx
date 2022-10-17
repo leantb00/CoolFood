@@ -17,6 +17,7 @@ import { Input, Icon } from "@rneui/themed";
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { Card }  from "../components/Card";
 import { AxiosError } from "axios";
+import * as Location from 'expo-location';
 
 
 export default function ({
@@ -25,6 +26,7 @@ export default function ({
   const { isDarkmode, setTheme } = useTheme();
   const [listEstablishment, setListEstablishment] = useState<any>([])
   const [searchText, setSearchText] = useState('')
+  const [location, setLocation] = useState<any>(null)
   const [refreshing, setRefreshing] = useState(false)
   function onPullToRefresh(){
     getEstablishments()
@@ -38,16 +40,36 @@ export default function ({
 
   useEffect(() => {
     getEstablishments()
-  }, [])
+  }, [location])
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        showMessage({
+          message: 'Permissao de Localizacao Negada',
+          type: "danger",
+        });
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+    getEstablishments()
+  }, []);
 
   async function getEstablishments(){
     setRefreshing(true)
     try{
-      const response = await establishment.getEstablishments()
+      let coords = {lat:location.coords.latitude, long:location.coords.longitude}
+      const response = await establishment.getEstablishments(coords)
       setRefreshing(false)
       // console.log('response || ', response)
       if(response){
-        setListEstablishment(response.data)
+        console.log('response data || ', response.data)
+        let datafiltered = response.data.sort((a:any,b:any) => a.distance-b.distance)
+        setListEstablishment(datafiltered)
       }
     }catch(e){
       if(e instanceof AxiosError){
@@ -57,8 +79,9 @@ export default function ({
           type: "danger",
         });
       } else{
+        console.log('error || ', e)
         showMessage({
-          message: "Nao deu Certo logar Verifique Dados de usuario e Senha.",
+          message: "Nao deu Pegar os dados de estabelecimento.",
           type: "danger",
         });
       }
@@ -101,7 +124,7 @@ export default function ({
           renderItem={({ item, index }) => (
             <Card
               item={item}
-              onPress={() => {}}
+              onPress={() => navigation.navigate("Establishment",{item})}
               key={index}
             />
           )}
@@ -110,7 +133,7 @@ export default function ({
           ListEmptyComponent={
             listEstablishment.length == 0 ? (
               <View style={{ marginTop: 10 }}>
-                <Text>
+                <Text style={{textAlign:'center', fontSize:22, paddingTop:22}}>
                   {'Nenhum Resultado Encontrado'}
                 </Text>
               </View>
@@ -143,23 +166,6 @@ export default function ({
                       color="#BA4458"
                     />
                   }
-                  // InputComponent={
-                  //   () => {
-                  //   return <TextInput
-                  //     onChangeText={(text:any) => {
-                  //       setSearchText(text)
-                  //       console.log("alterando Texto")
-                  //     }}
-                  //     // onSubmitEditing={() => {
-                  //     //   programSearch(searchText);
-                  //     // }}
-                  //     value={searchText}
-                  //     placeholder={'Busca'}
-                  //     // autoCapitalize={"none"}
-                  //     // underlineColorAndroid="transparent"
-                  //     style={{width:'100%'}}
-                  //   />}
-                  // }
 
                   onChangeText={(text:any) => {
                     setSearchText(text)

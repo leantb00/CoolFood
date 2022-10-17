@@ -25,6 +25,7 @@
     "expo-auth-session": "~3.5.0",
     "expo-facebook": "^12.2.0",
     "expo-font": "~10.0.4",
+    "expo-location": "~14.0.1",
     "expo-random": "^12.3.0",
     "expo-status-bar": "~1.2.0",
     "firebase": "^9.6.1",
