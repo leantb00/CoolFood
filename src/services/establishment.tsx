@@ -7,6 +7,22 @@ const getEstablishments = (location?: Location) => {
 
     return api.get('establishment/'+query)
 }
+
+const getEstablishment_by_id = (id:number) => {
+    return api.get('establishment/'+id+'/')
+}
+
+const addComment = (text:string, liked:boolean, establishment:number) => {
+    return api.post('establishment/add_comment/', {text,establishment, linked:liked})
+}
+
+
+
+
+
+
 export default {
-    getEstablishments
+    getEstablishments,
+    addComment,
+    getEstablishment_by_id
 };

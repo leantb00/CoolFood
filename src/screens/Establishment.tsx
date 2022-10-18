@@ -1,50 +1,53 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import { View, StyleSheet, RefreshControl} from 'react-native';
 import establishment from '../services/establishment';
 import { Card, Text } from '@rneui/themed';
 import { Layout } from 'react-native-rapi-ui';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Cell, Row } from '../components/Grid';
 import { Avatar } from "@rneui/themed";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as service_est from '../services/establishment';
+import { AxiosError } from "axios";
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 export default function Establishment(props:any) {
-    // const establishment = {
-    //     name:'Fexssa',
-    //     description:'loLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum',
-    //     address:'',
-    //     sch_establishment:[
-    //     {
-    //         day_week:'Segunda-Feira',
-    //         shift:'24 horas',
-    //         sch_begin_shift:'08:00',
-    //         sch_end_shift:'12:00',
-    //     },
-    //     {
-    //         day_week:'Terca-Feira',
-    //         shift:'24 horas',
-    //         sch_begin_shift:'08:00',
-    //         sch_end_shift:'12:00',
-    //     },
-    //     {
-    //         day_week:'Quarta-Feira',
-    //         shift:'24 horas',
-    //         sch_begin_shift:'08:00',
-    //         sch_end_shift:'12:00',
-    //     },
-    //     {
-    //         day_week:'Quinta-Feira',
-    //         shift:'24 horas',
-    //         sch_begin_shift:'08:00',
-    //         sch_end_shift:'12:00',
-    //     },
-    // ]
-    // }
+    const [establishment, setEstablishment] = useState(props.route.params.item)
+    const [refreshing, setRefreshing] = useState(false)
+    async function getEstablishment(){
+        try{
+            setRefreshing(true)
+            const response = await service_est.default.getEstablishment_by_id(establishment.id)
+            setEstablishment(response.data)
+            setRefreshing(false)
+        }catch(e){
+            setRefreshing(false)
+            if(e instanceof AxiosError){
+                showMessage({
+                message: e.response ? e.response.data.msg : 'Nao deu Listar os Estabelecimentos, Verifique sua conexao',
+                type: "danger",
+                });
+            } else{
+                console.log('error || ', e)
+                showMessage({
+                message: "Nao deu Pegar os dados de estabelecimento.",
+                type: "danger",
+                });
+            }
+        }
+        
+    }
 
-    const establishment = props.route.params.item
-console.log("estavblishment || ", establishment)
+    // const establishment = props.route.params.item
     return(
-        <Layout style={{flex:1}}>
-            <ScrollView contentContainerStyle={{ alignItems:'center'}}>
+        <SafeAreaView style={{flex:1}}>
+            <ScrollView  contentContainerStyle={{ alignItems:'center'}} 
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => getEstablishment()}
+                />
+            }>
                 <View style={{justifyContent:'center'}}>
                     <Text h1>
                         {establishment.name}
@@ -113,53 +116,12 @@ console.log("estavblishment || ", establishment)
                             </View>
                         )
                     })}
-                    {/* <View style={{flex:1, flexDirection:'row'}}>
-                        <Avatar
-                            size={64}
-                            rounded
-                            containerStyle={{margin:5}}
-                            source={{uri:'https://randomuser.me/api/portraits/men/36.jpg'}}
-                            // key={`${chunkIndex}-${i}`}
-                        />
-                        <View>
-                            <Text>JULIO FELIX</Text>
-                            <Text>Restaurante Bom</Text>
-                            <Avatar
-                                size={32}
-                                rounded
-                                icon={{ name: 'thumbs-up', type: 'font-awesome' }}
-                                containerStyle={{ backgroundColor: 'green' }}
-                            />
-
-                        </View>
-
-                    </View>
-                    <View style={{flex:1, flexDirection:'row'}}>
-                        <Avatar
-                            size={64}
-                            rounded
-                            containerStyle={{margin:5}}
-                            source={{uri:'https://drive.google.com/file/d/0B90xW-QMSOZSM3J6NVlDMEl1ZFE/view?usp=sharing&resourcekey=0-5hLGHQ8TxTQzNsq1qLV_xA'}}
-                            // key={`${chunkIndex}-${i}`}
-                        />
-                        <View>
-                            <Text>DANILO FELIX</Text>
-                            <Text>Restaurante RUIM</Text>
-                            <Avatar
-                                size={32}
-                                rounded
-                                icon={{ name: 'thumbs-down', type: 'font-awesome' }}
-                                containerStyle={{ backgroundColor: 'red' }}
-                            />
-
-                        </View>
-
-                    </View> */}
+                   
                 </Card>
 
                 
             </ScrollView>
             
-        </Layout>
+        </SafeAreaView>
     )
 }

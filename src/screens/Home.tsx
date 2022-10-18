@@ -18,6 +18,7 @@ import { showMessage, hideMessage } from "react-native-flash-message";
 import { Card }  from "../components/Card";
 import { AxiosError } from "axios";
 import * as Location from 'expo-location';
+import { useFocusEffect } from "@react-navigation/native";
 
 
 export default function ({
@@ -39,12 +40,21 @@ export default function ({
 
 
   useEffect(() => {
+    geolocation()
+  }, [])
+
+  useEffect(() => {
     getEstablishments()
   }, [location])
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+  useFocusEffect(
+    React.useCallback(() => {
+      geolocation();
+    }, [])
+  );
+
+  async function geolocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         showMessage({
           message: 'Permissao de Localizacao Negada',
@@ -55,9 +65,7 @@ export default function ({
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
-    })();
-    getEstablishments()
-  }, []);
+  }
 
   async function getEstablishments(){
     setRefreshing(true)
@@ -90,23 +98,6 @@ export default function ({
 
   return (
     <Layout>
-      {/* <TopNav
-        middleContent="Home"
-        rightContent={
-          <Ionicons
-            name={isDarkmode ? "sunny" : "moon"}
-            size={20}
-            color={isDarkmode ? themeColor.white100 : themeColor.dark}
-          />
-        }
-        rightAction={() => {
-          if (isDarkmode) {
-            setTheme("light");
-          } else {
-            setTheme("dark");
-          }
-        }}
-      /> */}
       <View
         style={{
           flex: 1,
