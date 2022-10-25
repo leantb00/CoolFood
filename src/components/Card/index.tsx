@@ -27,10 +27,12 @@ export function Card({item, onPress}: any){
                   // activeOpacity={0.7}
                 />
               )} */}
-              {/* <Avatar
+              {item.image_url && <Avatar
                   size={95}
                   imageProps={{ resizeMode: "contain" }}
-                  source={require('../../../assets/icon.png')}
+                  source={{
+                            uri: item.image_url,
+                          }}
                   // source={
                   //   !item.image
                   //     ? require("../../../assets/image/logo_drawe3.png")
@@ -40,14 +42,14 @@ export function Card({item, onPress}: any){
                   // }
                   // onPress={() => console.log('Works! == Funfa!!!')}
                   // activeOpacity={0.7}
-                /> */}
+                />}
               <View style={css.styles.listItemContainer}>
                 <Text
                   numberOfLines={1}
                   ellipsizeMode={"tail"}
                   style={css.styles.listItemTitle}
                 >
-                  {item.name}
+                  {item.name || item.title}
                 </Text>
                 <Text
                   numberOfLines={4}
@@ -61,7 +63,7 @@ export function Card({item, onPress}: any){
                   ellipsizeMode={"tail"}
                   style={css.styles.listItemText}
                 >
-                  {item.address.city + ' - ' + item.address.state}
+                  {typeof item.address == "string" ? item.address : item.address.city + ' - ' + item.address.state}
                 </Text>
                 
               

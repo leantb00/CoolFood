@@ -13,7 +13,7 @@ export default function Comment(props:any){
     const [liked, setLiked] = useState<any>(null)
     const [refreshing, setRefreshing] = useState(false)
 
-    const establishment_id = props.route.params.establishment.id
+    const establishment_id = props.route.params.establishment.id // Propriedade que veio pelo navegador
 
     
     async function send(){
@@ -26,7 +26,7 @@ export default function Comment(props:any){
                 setRefreshing(false)
                 // console.log('response || ', response)
                 if(response){
-                    props.navigation.navigate('Home')
+                    props.navigation.navigate('Home') // Comando para ir para outra tela usando a propriedade de navegacao.
                 }
             }catch(e){
                 if(e instanceof AxiosError){

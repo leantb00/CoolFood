@@ -44,7 +44,7 @@ export default function ({
   }, [])
 
   useEffect(() => {
-    getEstablishments()
+    location?.coords && getEstablishments()
   }, [location])
 
   useFocusEffect(
@@ -154,7 +154,7 @@ export default function ({
                       onPress={() => {
                         programSearch(searchText)
                       }}
-                      color="#BA4458"
+                      color="black"
                     />
                   }
 
@@ -168,7 +168,7 @@ export default function ({
                   }}
                   inputStyle={{
                     backgroundColor: "#EFEFEF",
-                    color: "#da332e",
+                    color: "black",
                   }}
                   
                 />

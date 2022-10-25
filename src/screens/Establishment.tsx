@@ -48,10 +48,28 @@ export default function Establishment(props:any) {
                     onRefresh={() => getEstablishment()}
                 />
             }>
-                <View style={{justifyContent:'center'}}>
-                    <Text h1>
-                        {establishment.name}
-                    </Text>
+                <View style={{justifyContent:'center', alignItems:'center'}}>
+                    <Avatar
+                        size={128}
+                        rounded
+                        containerStyle={{margin:5}}
+                        source={{uri:'https://cdn.pixabay.com/photo/2016/12/05/22/57/smile-1885144_1280.jpg'}}
+                        // key={`${chunkIndex}-${i}`}
+                    />
+                    <View style={{ flexDirection:'row', alignItems:'center'}}>
+                        <Text h4>
+                            {establishment.name}
+                        </Text>
+                        <Avatar
+                            size={48}
+                            icon={{ name:'star' , type: 'font-awesome', color:'gray'}}
+                            
+
+                            onPress={() => {}}
+                        />
+                        
+                    </View>
+                    
                 </View>
                 <Card wrapperStyle={{alignItems:'center'}} containerStyle={{ width:"90%", marginBottom:5,}}>
                     <Card.Title>Detalhes do Estabelecimento</Card.Title>

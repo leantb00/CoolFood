@@ -2,7 +2,7 @@ import Axios, {AxiosInstance} from 'axios';
 import Storage from '../utils/Storage';
 
 export const api = Axios.create({
-    baseURL: 'https://1d28-2804-d4b-a97c-9700-ddee-2e30-507e-db3c.sa.ngrok.io/api/',
+    baseURL: 'https://7efc-2804-d4b-a97c-9700-e892-f800-70f5-c8a1.sa.ngrok.io/api/',
     timeout: 5000,
     // headers: {'X-Custom-Header': 'foobar'}
 });
@@ -13,6 +13,7 @@ api.interceptors.request.use(async function (req:any) {
     // Faz alguma coisa antes da requisição ser enviada
     if (!req.public) {
       const token = await Storage.getToken();
+      console.log('Token || ', token)
       if (token) {
         req.headers.authorization =
           req.headers.authorization || `Token ${token}`;

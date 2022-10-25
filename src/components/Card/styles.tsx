@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
     flex: 1
   },
   listItemTitle: {
-    color: "#da332e",
+    color: "black",
     fontWeight: "bold",
     fontSize: 16
   },

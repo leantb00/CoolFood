@@ -16,6 +16,9 @@ const addComment = (text:string, liked:boolean, establishment:number) => {
     return api.post('establishment/add_comment/', {text,establishment, linked:liked})
 }
 
+const getEvents = () => {
+    return api.get('events/')
+}
 
 
 
@@ -24,5 +27,6 @@ const addComment = (text:string, liked:boolean, establishment:number) => {
 export default {
     getEstablishments,
     addComment,
-    getEstablishment_by_id
+    getEstablishment_by_id,
+    getEvents
 };
