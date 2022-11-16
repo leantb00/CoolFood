@@ -49,21 +49,23 @@ export default function ({
     getMe()
   }, [])
   
-  
+  function goToEdit(){
+    navigation.navigate('ProfileEdit')
+  }
   return (
     <SafeAreaView style={{flex:1,justifyContent: "flex-start", alignItems:'center'}}>
       <Avatar
         size={128}
         rounded
         containerStyle={{margin:5}}
-        source={{uri:'https://cdn.pixabay.com/photo/2016/12/05/22/57/smile-1885144_1280.jpg'}}
+        source={{uri:user.picture}}
         // key={`${chunkIndex}-${i}`}
       />
       <Text>{user.full_name}</Text>
       <View style={{flex:1,width:'100%', alignItems:'center', marginTop:25}}>
 
         
-        <TouchableOpacity style={{height:35, width:'100%', borderBottomColor:'black', borderWidth:.3, alignItems:'center', justifyContent:'center', marginBottom:2}} >
+        <TouchableOpacity onPress={goToEdit} style={{height:35, width:'100%', borderBottomColor:'black', borderWidth:.3, alignItems:'center', justifyContent:'center', marginBottom:2}} >
           <Text style={{paddingHorizontal:20}}>Profile</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => exit()} style={{height:35, width:'100%', borderBottomColor:'black', borderWidth:.3, alignItems:'center', justifyContent:'center'}} >

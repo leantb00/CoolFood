@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Linking, FlatList, TouchableOpacity, TextInput } from "react-native";
+import { View, Linking, FlatList, TouchableOpacity, TextInput, Alert } from "react-native";
 import { MainStackParamList } from "../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
@@ -13,6 +13,8 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 import establishment from "../services/establishment"
+
+import { getTicket } from '../services/events'
 import { Input, Icon } from "@rneui/themed";
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { Card }  from "../components/Card";
@@ -37,6 +39,30 @@ export default function ({
     const newList = listEvents.filter((item:any) => item.name.includes(text))
     setListEvents(newList)
   }
+
+  async function getCupon(id_event:number){
+    try{
+        setRefreshing(true)
+        const response = await getTicket(id_event)
+        Alert.alert("Seu Cupom", "Cuidado com a Data de Expiracao\n "+response.data.code + "\n Expiracao: "+ response.data.expirationDate)
+        // setEstablishment(response.data)
+        setRefreshing(false)
+    }catch(e){
+        setRefreshing(false)
+        if(e instanceof AxiosError){
+            showMessage({
+            message: e.response ? e.response.data.msg : 'Nao deu certo, Verifique sua conexao',
+            type: "danger",
+            });
+        } else{
+            console.log('error || ', e)
+            showMessage({
+            message: "Nao deu Para gerar Cupom"
+            });
+        }
+    }
+
+}
 
 
   useEffect(() => {
@@ -114,7 +140,17 @@ export default function ({
           renderItem={({ item, index }) => (
             <Card
               item={item}
-              // onPress={() => navigation.navigate("Establishment",{item})}
+              onPress={() => Alert.alert("Gerar Ticket?","lembre de salvar o ticket.", [
+                {
+                  text: "Sim",
+                  onPress: () => getCupon(item.id)
+                },
+                {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel"
+                },
+              ])}
               key={index}
             />
           )}

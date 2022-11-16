@@ -43,6 +43,22 @@ export function Card({item, onPress}: any){
                   // onPress={() => console.log('Works! == Funfa!!!')}
                   // activeOpacity={0.7}
                 />}
+                {item.logo && <Avatar
+                  size={95}
+                  imageProps={{ resizeMode: "contain" }}
+                  source={{
+                            uri: item.logo,
+                          }}
+                  // source={
+                  //   !item.image
+                  //     ? require("../../../assets/image/logo_drawe3.png")
+                  //     : {
+                  //         uri: item.image,
+                  //       }
+                  // }
+                  // onPress={() => console.log('Works! == Funfa!!!')}
+                  // activeOpacity={0.7}
+                />}
               <View style={css.styles.listItemContainer}>
                 <Text
                   numberOfLines={1}

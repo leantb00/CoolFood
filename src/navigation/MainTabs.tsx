@@ -11,6 +11,7 @@ import About from "../screens/About";
 import Profile from "../screens/Profile";
 import Establishment from "../screens/Establishment";
 import Comment from "../screens/Comment";
+import ProfileEdit from "../screens/ProfileEdit";
 
 
 const Stack = createNativeStackNavigator();
@@ -24,6 +25,20 @@ const HomeStack = () => {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Establishment" component={Establishment} />
       <Stack.Screen name="Comment" component={Comment} />
+    </Stack.Navigator>
+  );
+};
+
+const SettingTabStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Settings" component={Profile}/>
+      <Stack.Screen name="ProfileEdit" component={ProfileEdit} />
+      {/* <Stack.Screen name="Comment" component={Comment} /> */}
     </Stack.Navigator>
   );
 };
@@ -75,7 +90,7 @@ const MainTabs = () => {
       />
       <Tabs.Screen
         name="Profile"
-        component={Profile}
+        component={SettingTabStack}
         options={{
           tabBarLabel: ({ focused }) => (
             <TabBarText focused={focused} title="Profile" />

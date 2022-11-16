@@ -8,12 +8,20 @@ import { Cell, Row } from '../components/Grid';
 import { Avatar } from "@rneui/themed";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as service_est from '../services/establishment';
+
 import { AxiosError } from "axios";
 import { showMessage, hideMessage } from "react-native-flash-message";
+import user from '../services/user';
+import {
+    Button,
+  } from "react-native-rapi-ui";
 
 export default function Establishment(props:any) {
     const [establishment, setEstablishment] = useState(props.route.params.item)
     const [refreshing, setRefreshing] = useState(false)
+
+    
+
     async function getEstablishment(){
         try{
             setRefreshing(true)
@@ -38,6 +46,15 @@ export default function Establishment(props:any) {
         
     }
 
+    async function favorite_establishment() {
+        try{
+            const response = await user.favorite(establishment.id);
+            getEstablishment()
+        } catch(e){
+
+        }
+    }
+
     // const establishment = props.route.params.item
     return(
         <SafeAreaView style={{flex:1}}>
@@ -53,7 +70,7 @@ export default function Establishment(props:any) {
                         size={128}
                         rounded
                         containerStyle={{margin:5}}
-                        source={{uri:'https://cdn.pixabay.com/photo/2016/12/05/22/57/smile-1885144_1280.jpg'}}
+                        source={{uri:establishment.logo}}
                         // key={`${chunkIndex}-${i}`}
                     />
                     <View style={{ flexDirection:'row', alignItems:'center'}}>
@@ -62,10 +79,10 @@ export default function Establishment(props:any) {
                         </Text>
                         <Avatar
                             size={48}
-                            icon={{ name:'star' , type: 'font-awesome', color:'gray'}}
+                            icon={{ name:'star' , type: 'font-awesome', color:establishment.is_fav ? 'yellow' : 'gray'}}
                             
 
-                            onPress={() => {}}
+                            onPress={() => favorite_establishment()}
                         />
                         
                     </View>
@@ -91,6 +108,19 @@ export default function Establishment(props:any) {
                     </Card>                    
                     
                 </Card>
+                {/* <Card wrapperStyle={{alignItems:'center'}} containerStyle={{ width:"90%", marginBottom:5,}}>
+                    <Button color="red"
+                        text={refreshing ? "Loading" : "Gerar Ticket"}
+                        onPress={() => {
+                            props.navigation.navigate("Login");
+                        }}
+                        style={{
+                            marginTop: 20,
+                            
+                        }}
+                        disabled={refreshing}
+                    />
+                </Card> */}
                 <Card containerStyle={{width:'100%'}}>
                     <View style={{flex:1, flexDirection:'row', alignItems:'flex-end', justifyContent:'flex-end'}}>
                         <Card.Title style={{marginRight:'30%'}} >Comentarios</Card.Title>
@@ -103,9 +133,9 @@ export default function Establishment(props:any) {
                     </View>
                     
                     <Card.Divider/>
-                    {establishment.comment_establishment.map((item:any) => {
+                    {establishment.comment_establishment.map((item:any, index:number) => {
                         return (
-                            <View style={{flex:1, flexDirection:'row', borderColor:'black', borderWidth:.2, marginBottom:15}}>
+                            <View key={index} style={{flex:1, flexDirection:'row', borderColor:'black', borderWidth:.2, marginBottom:15}}>
                                 <Avatar
                                     size={64}
                                     rounded

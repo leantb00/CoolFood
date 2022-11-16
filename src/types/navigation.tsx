@@ -1,7 +1,8 @@
 export type MainStackParamList = {
 	MainTabs: undefined;
 	Establishment: { item: any };
-	Comment:any
+	Comment:any;
+	ProfileEdit:any;
 };
 
 export type AuthStackParamList = {

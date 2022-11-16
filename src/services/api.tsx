@@ -2,7 +2,7 @@ import Axios, {AxiosInstance} from 'axios';
 import Storage from '../utils/Storage';
 
 export const api = Axios.create({
-    baseURL: 'https://7efc-2804-d4b-a97c-9700-e892-f800-70f5-c8a1.sa.ngrok.io/api/',
+    baseURL: 'https://f559-2804-d4b-a9cf-cb00-b0ff-df42-4d2a-249c.sa.ngrok.io/api/',
     timeout: 5000,
     // headers: {'X-Custom-Header': 'foobar'}
 });
