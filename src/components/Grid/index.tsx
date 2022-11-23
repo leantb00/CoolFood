@@ -25,8 +25,8 @@ function Cell({ data }:any) {
 function Row({ column }:any) {  
     return (
         <View style={styles.rowStyle}>
-        {column.map((data:any) => (
-            <Cell data={data} />
+        {column.map((data:any, index:number) => (
+            <Cell key={index} data={data} />
         ))}
         </View>
     );

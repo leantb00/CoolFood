@@ -5,6 +5,7 @@ import Navigation from "./src/navigation";
 import { AuthProvider } from "./src/provider/AuthProvider";
 import FlashMessage from "react-native-flash-message";
 
+
 export default function App() {
   const images = [
     require("./assets/images/login0.jpg"),

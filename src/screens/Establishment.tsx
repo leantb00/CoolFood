@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import { View, StyleSheet, RefreshControl} from 'react-native';
+import { View, StyleSheet, RefreshControl, ScrollView} from 'react-native';
 import establishment from '../services/establishment';
 import { Card, Text } from '@rneui/themed';
 import { Layout } from 'react-native-rapi-ui';
-import { ScrollView } from 'react-native-gesture-handler';
+// import { ScrollView } from 'react-native-gesture-handler';
 import { Cell, Row } from '../components/Grid';
 import { Avatar } from "@rneui/themed";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -64,7 +64,8 @@ export default function Establishment(props:any) {
                     refreshing={refreshing}
                     onRefresh={() => getEstablishment()}
                 />
-            }>
+            }
+            >
                 <View style={{justifyContent:'center', alignItems:'center'}}>
                     <Avatar
                         size={128}
@@ -87,7 +88,7 @@ export default function Establishment(props:any) {
                         
                     </View>
                     
-                </View>
+                </View> 
                 <Card wrapperStyle={{alignItems:'center'}} containerStyle={{ width:"90%", marginBottom:5,}}>
                     <Card.Title>Detalhes do Estabelecimento</Card.Title>
                     <Card.Divider />
@@ -132,7 +133,7 @@ export default function Establishment(props:any) {
                         />
                     </View>
                     
-                    <Card.Divider/>
+                <Card.Divider/> 
                     {establishment.comment_establishment.map((item:any, index:number) => {
                         return (
                             <View key={index} style={{flex:1, flexDirection:'row', borderColor:'black', borderWidth:.2, marginBottom:15}}>
@@ -168,7 +169,7 @@ export default function Establishment(props:any) {
                 </Card>
 
                 
-            </ScrollView>
+             </ScrollView>
             
         </SafeAreaView>
     )

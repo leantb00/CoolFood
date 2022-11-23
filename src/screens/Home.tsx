@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Linking, FlatList, TouchableOpacity, TextInput } from "react-native";
+import { View, Platform, Linking, FlatList, TouchableOpacity, TextInput } from "react-native";
 import { MainStackParamList } from "../types/navigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
@@ -13,13 +13,24 @@ import {
   themeColor,
 } from "react-native-rapi-ui";
 import establishment from "../services/establishment"
+import user from "../services/user"
 import { Input, Icon } from "@rneui/themed";
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { Card }  from "../components/Card";
 import { AxiosError } from "axios";
 import * as Location from 'expo-location';
 import { useFocusEffect } from "@react-navigation/native";
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
 
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function ({
   navigation,
@@ -33,6 +44,45 @@ export default function ({
     getEstablishments()
   }
 
+  async function registerForPushNotificationsAsync() {
+    let token;
+  
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+  
+    if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log("Token PUSH || " + token);
+      try{
+        const response = await user.registerPush(token);
+        
+        // getEstablishment()
+      } catch(e){
+
+      }
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+  
+    return token;
+  }
+
   function programSearch(text:any){
     const newList = listEstablishment.filter((item:any) => item.name.includes(text))
     setListEstablishment(newList)
@@ -40,6 +90,7 @@ export default function ({
 
 
   useEffect(() => {
+    registerForPushNotificationsAsync()
     geolocation()
   }, [])
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1024133118251",
+    "project_id": "teste-push-expo",
+    "storage_bucket": "teste-push-expo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024133118251:android:8b6306222f4d915ad56d6e",
+        "android_client_info": {
+          "package_name": "com.deway.tryexpopush"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024133118251-4k12hgf0b0jquue8f1pts27lnvhm103q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqqNTPq4r_uA0goItFcPzGaP0tZVXcMy8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024133118251-4k12hgf0b0jquue8f1pts27lnvhm103q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
