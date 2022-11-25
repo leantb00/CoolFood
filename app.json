@@ -19,11 +19,22 @@
     "ios": {
       "supportsTablet": true
     },
+    "client": [
+      {
+        "api_key": [
+          {
+            "current_key": "AIzaSyAqqNTPq4r_uA0goItFcPzGaP0tZVXcMy8"
+          }
+        ]
+      }
+    ],
     "android": {
+      "package":"com.deway.tryexpopush",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
